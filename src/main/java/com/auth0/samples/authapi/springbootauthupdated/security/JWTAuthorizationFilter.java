@@ -1,12 +1,14 @@
 package com.auth0.samples.authapi.springbootauthupdated.security;
 
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.samples.authapi.springbootauthupdated.user.UserDetailsServiceImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +22,11 @@ import static com.auth0.samples.authapi.springbootauthupdated.security.SecurityC
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager) {
+    private final UserDetailsServiceImpl userDetailsService;
+
+    public JWTAuthorizationFilter(AuthenticationManager authManager, UserDetailsServiceImpl userDetailsService) {
         super(authManager);
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -34,25 +39,21 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             chain.doFilter(req, res);
             return;
         }
-
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication(req));
         chain.doFilter(req, res);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private BankIdAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
-            // parse the token
-            String user = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+            String bankId = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                     .build()
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
 
-
-            if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+            if (bankId != null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(bankId);
+                return new BankIdAuthenticationToken(userDetails, new ArrayList<>());
             }
             return null;
         }

@@ -1,6 +1,5 @@
 package com.auth0.samples.authapi.springbootauthupdated.security;
 
-import com.auth0.samples.authapi.springbootauthupdated.user.BankId;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +23,7 @@ public class BankIdAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        return principal.getPassword();
+        return principal.getUsername();
     }
 
     @Override

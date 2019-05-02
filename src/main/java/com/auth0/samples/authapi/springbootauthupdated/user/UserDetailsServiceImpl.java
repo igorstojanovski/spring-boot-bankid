@@ -33,14 +33,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
             applicationUser = new ApplicationUser();
             applicationUser.setId(bankId.getId());
-            applicationUser.setPassword(bankId.getBankId());
-            applicationUser.setUsername(bankId.getBankId());
 
             applicationUser = applicationUserRepository.save(applicationUser);
         } else {
             applicationUser = applicationUserRepository.findById(bankId.getId()).get();
         }
 
-        return new User(applicationUser.getUsername(), applicationUser.getPassword(), emptyList());
+        return new User(String.valueOf(applicationUser.getId()), bankId.getBankId(), emptyList());
     }
 }

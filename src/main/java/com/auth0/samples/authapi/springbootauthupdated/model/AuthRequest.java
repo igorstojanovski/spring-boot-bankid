@@ -1,6 +1,9 @@
 package com.auth0.samples.authapi.springbootauthupdated.model;
 
-public class AuthRequest {
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class AuthRequest implements BankIdEntity {
     private String personalNumber;
     private String endUserIp;
     private String userVisibleData;

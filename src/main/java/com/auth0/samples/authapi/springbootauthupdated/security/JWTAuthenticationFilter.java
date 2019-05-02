@@ -1,15 +1,12 @@
 package com.auth0.samples.authapi.springbootauthupdated.security;
 
 import com.auth0.jwt.JWT;
-import com.auth0.samples.authapi.springbootauthupdated.user.ApplicationUser;
 import com.auth0.samples.authapi.springbootauthupdated.user.BankId;
 import com.auth0.samples.authapi.springbootauthupdated.user.UserDetailsServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -44,11 +41,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     .readValue(req.getInputStream(), BankId.class);
             UserDetails userDetails = userDetailsService.loadUserByUsername(bankId.getBankId());
 
+            BankIdAuthenticationToken authentication = new BankIdAuthenticationToken(
+                    userDetails,
+                    new ArrayList<>());
+            authentication.setDetails(bankId.getBankId());
             return authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            userDetails.getUsername(),
-                            null,
-                            new ArrayList<>())
+                    authentication
             );
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -61,7 +59,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
         String token = JWT.create()
-                .withSubject((String) auth.getPrincipal())
+                .withSubject(auth.getDetails() + ((UserDetails)auth.getPrincipal()).getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
 
