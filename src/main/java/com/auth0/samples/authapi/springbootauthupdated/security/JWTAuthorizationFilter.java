@@ -2,11 +2,11 @@ package com.auth0.samples.authapi.springbootauthupdated.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.samples.authapi.springbootauthupdated.services.BankIdService;
 import com.auth0.samples.authapi.springbootauthupdated.user.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -23,10 +23,14 @@ import static com.auth0.samples.authapi.springbootauthupdated.security.SecurityC
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final BankIdService bankIdService;
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager, UserDetailsServiceImpl userDetailsService) {
+    @Autowired
+    public JWTAuthorizationFilter(AuthenticationManager authManager, UserDetailsServiceImpl userDetailsService,
+                                  BankIdService bankIdService) {
         super(authManager);
         this.userDetailsService = userDetailsService;
+        this.bankIdService = bankIdService;
     }
 
     @Override
@@ -52,8 +56,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .getSubject();
 
             if (bankId != null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(bankId);
-                return new BankIdAuthenticationToken(userDetails, new ArrayList<>());
+                return new BankIdAuthenticationToken(bankIdService.find(bankId), new ArrayList<>());
             }
             return null;
         }

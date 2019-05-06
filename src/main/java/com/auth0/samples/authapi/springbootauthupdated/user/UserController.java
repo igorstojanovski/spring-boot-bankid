@@ -1,5 +1,6 @@
 package com.auth0.samples.authapi.springbootauthupdated.user;
 
+import com.auth0.samples.authapi.springbootauthupdated.model.BankId;
 import com.auth0.samples.authapi.springbootauthupdated.repositories.BankIdRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,4 +1,6 @@
-package com.auth0.samples.authapi.springbootauthupdated.user;
+package com.auth0.samples.authapi.springbootauthupdated.model;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -6,11 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BankId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String bankId;
+    private String refId;
 
     public String getBankId() {
         return bankId;
@@ -26,5 +30,13 @@ public class BankId {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRefId() {
+        return refId;
+    }
+
+    public void setRefId(String refId) {
+        this.refId = refId;
     }
 }

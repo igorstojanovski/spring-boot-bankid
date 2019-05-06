@@ -1,5 +1,6 @@
 package com.auth0.samples.authapi.springbootauthupdated.security;
 
+import com.auth0.samples.authapi.springbootauthupdated.services.BankIdService;
 import com.auth0.samples.authapi.springbootauthupdated.user.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,12 +19,15 @@ import static com.auth0.samples.authapi.springbootauthupdated.security.SecurityC
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final BankIdAuthenticationProvider authenticationProvider;
+    private final BankIdService bankIdService;
     private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public WebSecurity(UserDetailsServiceImpl userDetailsService, BankIdAuthenticationProvider authenticationProvider) {
+    public WebSecurity(UserDetailsServiceImpl userDetailsService, BankIdAuthenticationProvider authenticationProvider,
+                       BankIdService bankIdService) {
         this.userDetailsService = userDetailsService;
         this.authenticationProvider = authenticationProvider;
+        this.bankIdService = bankIdService;
     }
 
     @Override
@@ -32,8 +36,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(), userDetailsService))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(), userDetailsService))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(), bankIdService))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), userDetailsService, bankIdService))
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

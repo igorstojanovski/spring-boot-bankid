@@ -1,5 +1,6 @@
 package com.auth0.samples.authapi.springbootauthupdated.user;
 
+import com.auth0.samples.authapi.springbootauthupdated.model.BankId;
 import com.auth0.samples.authapi.springbootauthupdated.services.BankIdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -23,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        BankId bankId = bankIdService.getBankId(username);
+        BankId bankId = bankIdService.find(username);
         ApplicationUser applicationUser;
 
         if(bankId == null) {

@@ -1,8 +1,11 @@
 package com.auth0.samples.authapi.springbootauthupdated.security;
 
 import com.auth0.jwt.JWT;
-import com.auth0.samples.authapi.springbootauthupdated.user.BankId;
-import com.auth0.samples.authapi.springbootauthupdated.user.UserDetailsServiceImpl;
+import com.auth0.samples.authapi.springbootauthupdated.model.AuthResponse;
+import com.auth0.samples.authapi.springbootauthupdated.model.BankId;
+import com.auth0.samples.authapi.springbootauthupdated.model.CollectResponse;
+import com.auth0.samples.authapi.springbootauthupdated.services.BankIdException;
+import com.auth0.samples.authapi.springbootauthupdated.services.BankIdService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -25,30 +28,38 @@ import static com.auth0.samples.authapi.springbootauthupdated.security.SecurityC
 import static com.auth0.samples.authapi.springbootauthupdated.security.SecurityConstants.TOKEN_PREFIX;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private final UserDetailsServiceImpl userDetailsService;
+    private final BankIdService bankIdService;
     private AuthenticationManager authenticationManager;
 
-    JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService) {
+    JWTAuthenticationFilter(AuthenticationManager authenticationManager, BankIdService bankIdService) {
         this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
+        this.bankIdService = bankIdService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
-            BankId bankId = new ObjectMapper()
-                    .readValue(req.getInputStream(), BankId.class);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(bankId.getBankId());
+            BankId bankId = new ObjectMapper().readValue(req.getInputStream(), BankId.class);
+            BankIdAuthenticationToken authentication = new BankIdAuthenticationToken(bankId, new ArrayList<>());
 
-            BankIdAuthenticationToken authentication = new BankIdAuthenticationToken(
-                    userDetails,
-                    new ArrayList<>());
-            authentication.setDetails(bankId.getBankId());
-            return authenticationManager.authenticate(
-                    authentication
-            );
-        } catch (IOException e) {
+            if(bankId.getRefId() == null) {
+                AuthResponse authResponse = bankIdService.auth(bankId.getBankId(), "0.0.0.0");
+                res.addHeader("refId", authResponse.getOrderRef());
+                return null;
+            } else {
+                CollectResponse collectResponse = bankIdService.collect(bankId.getRefId());
+                if(collectResponse != null && "complete".equals(collectResponse.getStatus())) {
+                    bankId = bankIdService.onboard(bankId);
+                    authentication.setDetails(bankId.getBankId());
+                    authentication.setAuthenticated(true);
+
+                    return authentication;
+                }
+
+                return null;
+            }
+        } catch (IOException | BankIdException e) {
             throw new RuntimeException(e);
         }
     }
@@ -57,9 +68,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
                                             FilterChain chain,
-                                            Authentication auth) throws IOException, ServletException {
+                                            Authentication auth) {
+        BankId principal = (BankId) auth.getPrincipal();
         String token = JWT.create()
-                .withSubject(auth.getDetails() + ((UserDetails)auth.getPrincipal()).getUsername())
+                .withSubject(principal.getBankId() + principal.getId())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
 

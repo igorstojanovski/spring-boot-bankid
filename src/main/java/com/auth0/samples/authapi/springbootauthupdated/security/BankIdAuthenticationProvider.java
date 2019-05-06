@@ -1,11 +1,11 @@
 package com.auth0.samples.authapi.springbootauthupdated.security;
 
+import com.auth0.samples.authapi.springbootauthupdated.model.BankId;
 import com.auth0.samples.authapi.springbootauthupdated.services.BankIdException;
 import com.auth0.samples.authapi.springbootauthupdated.services.BankIdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.net.NetworkInterface;
@@ -28,7 +28,7 @@ public class BankIdAuthenticationProvider implements AuthenticationProvider {
         String bankId = (String) authentication.getDetails();
         String ip;
 
-        BankIdAuthenticationToken bankIdAuthenticationToken = new BankIdAuthenticationToken((UserDetails) authentication.getPrincipal(), new ArrayList<>());
+        BankIdAuthenticationToken bankIdAuthenticationToken = new BankIdAuthenticationToken((BankId) authentication.getPrincipal(), new ArrayList<>());
         bankIdAuthenticationToken.setDetails(authentication.getDetails());
 
         try {

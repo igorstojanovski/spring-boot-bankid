@@ -4,6 +4,7 @@ public class CollectResponse {
     private String orderRef;
     private String status;
     private String hintCode;
+    private CompletitionData completitionData;
 
     public String getOrderRef() {
         return orderRef;
@@ -27,5 +28,13 @@ public class CollectResponse {
 
     public void setHintCode(String hintCode) {
         this.hintCode = hintCode;
+    }
+
+    public CompletitionData getCompletitionData() {
+        return completitionData;
+    }
+
+    public void setCompletitionData(CompletitionData completitionData) {
+        this.completitionData = completitionData;
     }
 }

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @Service
-@Profile("default")
+@Profile("production")
 public class BankIdAuthenticatorApache implements BankIdAuthenticator {
 
     @Autowired
