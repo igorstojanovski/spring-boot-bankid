@@ -10,11 +10,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -41,23 +39,29 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
             BankId bankId = new ObjectMapper().readValue(req.getInputStream(), BankId.class);
-            BankIdAuthenticationToken authentication = new BankIdAuthenticationToken(bankId, new ArrayList<>());
+
 
             if(bankId.getRefId() == null) {
                 AuthResponse authResponse = bankIdService.auth(bankId.getBankId(), "0.0.0.0");
                 res.addHeader("refId", authResponse.getOrderRef());
                 return null;
             } else {
+
                 CollectResponse collectResponse = bankIdService.collect(bankId.getRefId());
                 if(collectResponse != null && "complete".equals(collectResponse.getStatus())) {
+                    String personalNumber = collectResponse.getCompletitionData().getUser().getPersonalNumber();
+
+                    bankId.setBankId(personalNumber);
+
+                    BankIdAuthenticationToken authentication = new BankIdAuthenticationToken(bankId, new ArrayList<>());
                     bankId = bankIdService.onboard(bankId);
                     authentication.setDetails(bankId.getBankId());
                     authentication.setAuthenticated(true);
 
                     return authentication;
+                } else {
+                    throw new RuntimeException("Authentication for ref id is not complete yet.");
                 }
-
-                return null;
             }
         } catch (IOException | BankIdException e) {
             throw new RuntimeException(e);
@@ -71,7 +75,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             Authentication auth) {
         BankId principal = (BankId) auth.getPrincipal();
         String token = JWT.create()
-                .withSubject(principal.getBankId() + principal.getId())
+            .withSubject(principal.getBankId() + "-" + principal.getId())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
 

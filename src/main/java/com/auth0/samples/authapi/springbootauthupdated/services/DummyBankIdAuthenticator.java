@@ -1,7 +1,9 @@
 package com.auth0.samples.authapi.springbootauthupdated.services;
 
 import com.auth0.samples.authapi.springbootauthupdated.model.AuthResponse;
+import com.auth0.samples.authapi.springbootauthupdated.model.BankIdUser;
 import com.auth0.samples.authapi.springbootauthupdated.model.CollectResponse;
+import com.auth0.samples.authapi.springbootauthupdated.model.CompletitionData;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,12 @@ public class DummyBankIdAuthenticator implements BankIdAuthenticator {
             personalNumbers.remove(personalNumber);
             CollectResponse collectResponse = new CollectResponse();
             collectResponse.setStatus("complete");
+
+            CompletitionData completitionData = new CompletitionData();
+            BankIdUser bankIdUser = new BankIdUser();
+            bankIdUser.setPersonalNumber(personalNumber);
+            completitionData.setUser(bankIdUser);
+            collectResponse.setCompletitionData(completitionData);
             return collectResponse;
         }
         return null;

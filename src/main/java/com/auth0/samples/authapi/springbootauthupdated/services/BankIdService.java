@@ -1,9 +1,9 @@
 package com.auth0.samples.authapi.springbootauthupdated.services;
 
 import com.auth0.samples.authapi.springbootauthupdated.model.AuthResponse;
+import com.auth0.samples.authapi.springbootauthupdated.model.BankId;
 import com.auth0.samples.authapi.springbootauthupdated.model.CollectResponse;
 import com.auth0.samples.authapi.springbootauthupdated.repositories.BankIdRepository;
-import com.auth0.samples.authapi.springbootauthupdated.model.BankId;
 import com.auth0.samples.authapi.springbootauthupdated.user.ApplicationUser;
 import com.auth0.samples.authapi.springbootauthupdated.user.ApplicationUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +48,9 @@ public class BankIdService {
             applicationUserRepository.save(applicationUser);
         }
         return internal;
+    }
+
+    public boolean isValid(String bankId) {
+        return bankIdRepository.findBankIdByBankId(bankId) != null;
     }
 }

@@ -50,13 +50,16 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private BankIdAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
-            String bankId = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+            String uniqueId = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                     .build()
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
 
-            if (bankId != null) {
-                return new BankIdAuthenticationToken(bankIdService.find(bankId), new ArrayList<>());
+            if (uniqueId != null) {
+                String bankId = uniqueId.split("-")[0];
+                if (bankIdService.isValid(bankId)) {
+                    return new BankIdAuthenticationToken(bankIdService.find(bankId), new ArrayList<>());
+                }
             }
             return null;
         }
