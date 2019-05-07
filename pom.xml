@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>co.igorski</groupId>
-	<artifactId>bankid-authorization-server</artifactId>
+    <artifactId>spring-boot-bankid</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bankid-authorization-server</name>
-	<description>Demo project for Spring Boot</description>
+    <name>spring-boot-bankid</name>
+    <description>Spring Boot Authentication based on BankId</description>
 
 	<properties>
 		<java.version>1.8</java.version>
