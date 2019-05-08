@@ -1,4 +1,4 @@
-package co.igorski.services;
+package co.igorski.services.bankId;
 
 import co.igorski.model.AuthResponse;
 import co.igorski.model.CollectResponse;

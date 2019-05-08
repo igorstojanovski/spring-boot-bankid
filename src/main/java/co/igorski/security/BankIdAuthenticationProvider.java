@@ -1,8 +1,8 @@
 package co.igorski.security;
 
 import co.igorski.model.BankId;
-import co.igorski.services.BankIdException;
-import co.igorski.services.BankIdService;
+import co.igorski.services.bankId.BankIdException;
+import co.igorski.services.bankId.BankIdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;

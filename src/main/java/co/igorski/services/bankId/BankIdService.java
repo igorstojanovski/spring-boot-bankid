@@ -1,26 +1,25 @@
-package co.igorski.services;
+package co.igorski.services.bankId;
 
 import co.igorski.model.AuthResponse;
 import co.igorski.model.BankId;
 import co.igorski.model.CollectResponse;
 import co.igorski.repositories.BankIdRepository;
-import co.igorski.user.ApplicationUser;
-import co.igorski.user.ApplicationUserRepository;
+import co.igorski.services.UserOnboarderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BankIdService {
-    private final ApplicationUserRepository applicationUserRepository;
+    private final UserOnboarderService userOnboarderService;
     private BankIdRepository bankIdRepository;
     private BankIdAuthenticator bankIdAuthenticator;
 
     @Autowired
     public BankIdService(BankIdRepository bankIdRepository, BankIdAuthenticator bankIdAuthenticator,
-                         ApplicationUserRepository applicationUserRepository) {
+                         UserOnboarderService userOnboarderService) {
         this.bankIdRepository = bankIdRepository;
         this.bankIdAuthenticator =bankIdAuthenticator;
-        this.applicationUserRepository = applicationUserRepository;
+        this.userOnboarderService = userOnboarderService;
     }
 
     public BankId find(String bankId) {
@@ -43,9 +42,7 @@ public class BankIdService {
         BankId internal = bankIdRepository.findBankIdByBankId(bankId.getBankId());
         if(internal == null) {
             internal = bankIdRepository.save(bankId);
-            ApplicationUser applicationUser = new ApplicationUser();
-            applicationUser.setId(internal.getId());
-            applicationUserRepository.save(applicationUser);
+            userOnboarderService.onBoard(internal.getId());
         }
         return internal;
     }

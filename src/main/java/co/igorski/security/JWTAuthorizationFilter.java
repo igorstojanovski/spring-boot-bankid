@@ -1,7 +1,6 @@
 package co.igorski.security;
 
-import co.igorski.services.BankIdService;
-import co.igorski.user.UserDetailsServiceImpl;
+import co.igorski.services.bankId.BankIdService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +17,11 @@ import java.util.ArrayList;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private final UserDetailsServiceImpl userDetailsService;
     private final BankIdService bankIdService;
 
     @Autowired
-    public JWTAuthorizationFilter(AuthenticationManager authManager, UserDetailsServiceImpl userDetailsService,
-                                  BankIdService bankIdService) {
+    public JWTAuthorizationFilter(AuthenticationManager authManager, BankIdService bankIdService) {
         super(authManager);
-        this.userDetailsService = userDetailsService;
         this.bankIdService = bankIdService;
     }
 

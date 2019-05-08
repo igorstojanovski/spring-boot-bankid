@@ -1,5 +1,6 @@
 package co.igorski.user;
 
+import co.igorski.impl.UnsecureUser;
 import co.igorski.model.BankId;
 import co.igorski.repositories.BankIdRepository;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,9 +26,9 @@ public class UserController {
 
         if(bankIdRepository.findBankIdByBankId(bankId.getBankId()) == null) {
             bankId = bankIdRepository.save(bankId);
-            ApplicationUser applicationUser = new ApplicationUser();
-            applicationUser.setId(bankId.getId());
-            applicationUserRepository.save(applicationUser);
+            UnsecureUser unsecureUser = new UnsecureUser();
+            unsecureUser.setId(bankId.getId());
+            applicationUserRepository.save(unsecureUser);
         }
     }
 }

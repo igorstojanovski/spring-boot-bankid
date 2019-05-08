@@ -1,5 +1,6 @@
 package co.igorski.services;
 
+import co.igorski.security.ApplicationSecurityException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;

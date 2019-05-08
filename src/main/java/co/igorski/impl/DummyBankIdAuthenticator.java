@@ -1,9 +1,11 @@
-package co.igorski.services;
+package co.igorski.impl;
 
 import co.igorski.model.AuthResponse;
 import co.igorski.model.BankIdUser;
 import co.igorski.model.CollectResponse;
 import co.igorski.model.CompletitionData;
+import co.igorski.services.bankId.BankIdAuthenticator;
+import co.igorski.services.bankId.BankIdException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;

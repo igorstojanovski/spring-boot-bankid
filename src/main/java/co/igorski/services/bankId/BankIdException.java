@@ -1,4 +1,4 @@
-package co.igorski.services;
+package co.igorski.services.bankId;
 
 public class BankIdException extends Exception {
     BankIdException(String message, Throwable e) {

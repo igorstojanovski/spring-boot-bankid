@@ -1,7 +1,7 @@
 package co.igorski;
 
 import co.igorski.model.AuthResponse;
-import co.igorski.services.BankIdService;
+import co.igorski.services.bankId.BankIdService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

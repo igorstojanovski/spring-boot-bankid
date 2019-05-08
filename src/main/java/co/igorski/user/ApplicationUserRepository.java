@@ -1,6 +1,7 @@
 package co.igorski.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import co.igorski.impl.UnsecureUser;
+import org.springframework.data.repository.CrudRepository;
 
-public interface ApplicationUserRepository extends JpaRepository<ApplicationUser, Long> {
+public interface ApplicationUserRepository extends CrudRepository<UnsecureUser, Long> {
 }

@@ -1,7 +1,6 @@
 package co.igorski.security;
 
-import co.igorski.services.BankIdService;
-import co.igorski.user.UserDetailsServiceImpl;
+import co.igorski.services.bankId.BankIdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -18,12 +17,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final BankIdAuthenticationProvider authenticationProvider;
     private final BankIdService bankIdService;
-    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public WebSecurity(UserDetailsServiceImpl userDetailsService, BankIdAuthenticationProvider authenticationProvider,
-                       BankIdService bankIdService) {
-        this.userDetailsService = userDetailsService;
+    public WebSecurity(BankIdAuthenticationProvider authenticationProvider, BankIdService bankIdService) {
         this.authenticationProvider = authenticationProvider;
         this.bankIdService = bankIdService;
     }
@@ -35,7 +31,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), bankIdService))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager(), userDetailsService, bankIdService))
+            .addFilter(new JWTAuthorizationFilter(authenticationManager(), bankIdService))
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

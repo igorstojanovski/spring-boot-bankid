@@ -1,10 +1,11 @@
-package co.igorski.services;
+package co.igorski.services.bankId;
 
 import co.igorski.model.AuthRequest;
 import co.igorski.model.AuthResponse;
 import co.igorski.model.CollectRequest;
 import co.igorski.model.CollectResponse;
 import co.igorski.model.ErrorResponse;
+import co.igorski.services.SecureHttpService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
