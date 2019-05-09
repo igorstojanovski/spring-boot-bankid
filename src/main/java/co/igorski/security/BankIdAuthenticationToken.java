@@ -1,6 +1,6 @@
 package co.igorski.security;
 
-import co.igorski.model.BankId;
+import co.igorski.model.bankid.BankId;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 

@@ -1,8 +1,8 @@
 package co.igorski.security;
 
-import co.igorski.model.AuthResponse;
-import co.igorski.model.BankId;
-import co.igorski.model.CollectResponse;
+import co.igorski.model.bankid.auth.AuthResponse;
+import co.igorski.model.bankid.BankId;
+import co.igorski.model.bankid.collect.CollectResponse;
 import co.igorski.services.bankId.BankIdException;
 import co.igorski.services.bankId.BankIdService;
 import com.auth0.jwt.JWT;
