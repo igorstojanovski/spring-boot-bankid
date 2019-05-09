@@ -1,4 +1,4 @@
-package co.igorski.user;
+package co.igorski.repositories;
 
 import co.igorski.impl.UnsecureUser;
 import org.springframework.data.repository.CrudRepository;

@@ -1,7 +1,7 @@
 package co.igorski.impl;
 
 import co.igorski.services.UserOnboarderService;
-import co.igorski.user.ApplicationUserRepository;
+import co.igorski.repositories.ApplicationUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
