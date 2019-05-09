@@ -1,4 +1,4 @@
-package co.igorski.model;
+package co.igorski.model.bankid.collect;
 
 public class Device {
     private String ipAddress;

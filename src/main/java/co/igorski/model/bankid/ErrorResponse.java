@@ -1,4 +1,4 @@
-package co.igorski.model;
+package co.igorski.model.bankid;
 
 public class ErrorResponse {
     private String errorCode;

@@ -1,4 +1,4 @@
-package co.igorski.model;
+package co.igorski.model.bankid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

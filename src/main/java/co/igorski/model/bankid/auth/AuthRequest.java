@@ -1,5 +1,6 @@
-package co.igorski.model;
+package co.igorski.model.bankid.auth;
 
+import co.igorski.model.bankid.BankIdEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
